@@ -1,0 +1,55 @@
+@import scala.concurrent.{ExecutionContext, Future}
+
+@(product: Form[UpdateProductForm],  category: (Seq[Category]), types: (Seq[Types]), delivery: (Seq[Delivery]), opinion: (Seq[Opinion]))(implicit request: MessagesRequestHeader, flash: Flash)
+
+@import helper._
+@flash.get("success").getOrElse("")
+
+
+@form(routes.ProductController.updateProductHandle()) {
+@helper.CSRF.formField
+<input name="id" id="id" value="@product("id").value" type="hidden" />
+@inputText(product("name"))
+@inputText(product("description"))
+@inputText(product("price"))
+@inputText(product("category"))
+
+
+<select name="category" id="category">
+    @for(cat <- category){
+        @if(cat.category_id.toString==product("category").value.getOrElse(0)) {
+            <option value="@cat.category_id" selected>@cat.category_name</option>
+        }
+        else{
+            <option value="@cat.category_id">@cat.category_name</option>
+        }
+    }
+</select>
+
+
+<select name="types" id="types">
+    @for(typ <- types){
+        @if(typ.id.toString==product("subcategory").value.getOrElse(0)) {
+            <option value="@typ.id" selected>@typ.type_field</option>
+        }
+        else{
+            <option value="@typ.id">@typ.type_field</option>
+        }
+    }
+</select>
+
+    <select name="delivery" id="delivery">
+    @for(dev <- delivery){
+        @if(dev.id.toString==product("delivery").value.getOrElse(0)) {
+            <option value="@dev.id" selected>@dev.name</option>
+        }
+        else{
+        <option value="@dev.id">@dev.name</option>
+        }
+    }
+    </select>
+
+<div class="buttons">
+    <input type="submit" value="Update Product"/>
+</div>
+}
